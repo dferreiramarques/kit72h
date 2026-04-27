@@ -125,12 +125,6 @@
       padding: var(--space-12) var(--space-16);
     }
 
-    .top-bar-row1 {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: var(--space-12);
-    }
 
     .app-title {
       font-family: var(--title-font-family);
@@ -1063,6 +1057,125 @@
     .filter-tab.active { animation: tabPop 0.25s ease; }
 
     /* ── Scrollbar ── */
+    /* ── Header right group ── */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      position: relative;
+    }
+
+    .icon-pill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--border-radius-medium);
+      border: 1px solid var(--ui-border-color);
+      background: var(--secondary-background-color);
+      color: var(--primary-text-color);
+      cursor: pointer;
+      transition: all var(--motion-productive-short) var(--motion-timing-transition);
+      touch-action: manipulation;
+    }
+
+    .icon-pill:active { border-color: var(--primary-color); color: var(--primary-color); background: var(--primary-selected-color); }
+
+    /* ── Share toast ── */
+    .share-toast {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--color-done-green);
+      color: #0a1a0a;
+      font-family: var(--font-family);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: var(--border-radius-medium);
+      white-space: nowrap;
+      box-shadow: var(--box-shadow-small);
+      opacity: 0;
+      transform: translateY(-4px);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 210;
+    }
+
+    .share-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Backup panel ── */
+    .backup-panel {
+      margin: 0 var(--space-16) 100px;
+      padding: var(--space-16);
+      background: var(--secondary-background-color);
+      border: 1px solid var(--layout-border-color);
+      border-radius: var(--border-radius-medium);
+    }
+
+    .backup-title {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--secondary-text-color);
+      margin-bottom: var(--space-12);
+    }
+
+    .backup-row {
+      display: flex;
+      gap: var(--space-8);
+    }
+
+    .btn-backup {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 11px;
+      border-radius: var(--border-radius-medium);
+      font-family: var(--title-font-family);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid;
+      transition: all var(--motion-productive-short) var(--motion-timing-transition);
+      touch-action: manipulation;
+    }
+
+    .btn-backup.save {
+      background: transparent;
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .btn-backup.save:active { background: var(--primary-selected-color); }
+
+    .btn-backup.load {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      color: var(--text-color-on-primary);
+    }
+
+    .btn-backup.load:active { background: var(--primary-hover-color); }
+
+    .backup-status {
+      font-size: 12px;
+      font-family: var(--mono, monospace);
+      color: var(--color-done-green);
+      margin-top: var(--space-8);
+      min-height: 18px;
+      transition: opacity 0.3s;
+    }
+
     /* ── Language picker ── */
     .lang-btn {
       display: flex;
@@ -1120,7 +1233,7 @@
     .lang-menu button.active-lang { background: var(--primary-selected-color); color: var(--link-color); }
 
     /* top-bar-row1 needs relative for dropdown positioning */
-    .top-bar-row1 { position: relative; }
+    .top-bar-row1 { position: relative; display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-12); }
 
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -1132,17 +1245,26 @@
 <div class="top-bar">
   <div class="top-bar-row1">
     <div class="app-title">KIT<span class="app-chip">72H</span></div>
-    <button class="lang-btn" id="lang-btn" onclick="toggleLangMenu()" aria-label="Idioma">
-      <span id="lang-flag">🇵🇹</span>
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" style="opacity:.6"><path d="M2 4l4 4 4-4"/></svg>
-    </button>
-    <div class="lang-menu" id="lang-menu">
-      <button onclick="setLang('pt')">🇵🇹 Português</button>
-      <button onclick="setLang('es')">🇪🇸 Español</button>
-      <button onclick="setLang('it')">🇮🇹 Italiano</button>
-      <button onclick="setLang('fr')">🇫🇷 Français</button>
-      <button onclick="setLang('de')">🇩🇪 Deutsch</button>
-      <button onclick="setLang('en')">🇬🇧 English</button>
+    <div class="header-right">
+      <button class="icon-pill" id="share-btn" onclick="shareApp()" aria-label="Partilhar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+        </svg>
+      </button>
+      <div id="share-toast" class="share-toast">🔗 Link copiado!</div>
+      <button class="lang-btn" id="lang-btn" onclick="toggleLangMenu()" aria-label="Idioma">
+        <span id="lang-flag">🇵🇹</span>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" style="opacity:.6"><path d="M2 4l4 4 4-4"/></svg>
+      </button>
+      <div class="lang-menu" id="lang-menu">
+        <button onclick="setLang('pt')">🇵🇹 Português</button>
+        <button onclick="setLang('es')">🇪🇸 Español</button>
+        <button onclick="setLang('it')">🇮🇹 Italiano</button>
+        <button onclick="setLang('fr')">🇫🇷 Français</button>
+        <button onclick="setLang('de')">🇩🇪 Deutsch</button>
+        <button onclick="setLang('en')">🇬🇧 English</button>
+      </div>
     </div>
   </div>
   <div class="controls-row">
@@ -1205,6 +1327,26 @@
 
 <!-- ITEM LIST -->
 <div class="list-body" id="list-body"></div>
+
+<!-- SAVE / LOAD PANEL -->
+<div class="backup-panel">
+  <div class="backup-title">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Backup
+  </div>
+  <div class="backup-row">
+    <button class="btn-backup save" onclick="saveBackup()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      Save
+    </button>
+    <button class="btn-backup load" onclick="triggerLoad()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Load
+    </button>
+    <input type="file" id="load-file" accept=".json" style="display:none" onchange="loadBackup(event)"/>
+  </div>
+  <div class="backup-status" id="backup-status"></div>
+</div>
 
 <!-- FAB -->
 <button class="fab" onclick="openSheet()" aria-label="Adicionar artigo">+</button>
@@ -1581,6 +1723,45 @@ const DEFAULTS=[
   {id:'d25',name:'Jogos / cartas',          emoji:'🎲', cat:'outros',     unit:'unid.',   qppd:0,    fixed:1,   note:'Recomendação do governo francês: manter crianças calmas sem ecrãs durante emergências.'},
 ].map(d=>({...d,checked:false,units:[]}));
 
+// ── ITEM NAME TRANSLATIONS (for default items only)
+const ITEM_NAMES={
+  pt:{d1:'Água potável',d2:'Conservas (atum/sardinha)',d3:'Feijão / grão em lata',d4:'Massa ou arroz',d5:'Bolachas / tostas',d6:'Frutos secos / nozes',d7:'Barras energéticas',d8:'Chocolate',d9:'Leite UHT',d10:'Mel',d11:'Kit primeiros socorros',d12:'Antialérgico + antidiarreico',d13:'Carvão activado',d14:'Medicação habitual (7d)',d15:'Lanterna a pilhas',d16:'Pilhas AA/AAA extra',d17:'Velas',d18:'Fósforos / isqueiro',d19:'Rádio portátil a pilhas',d20:'Powerbank carregado',d21:'Dinheiro em espécie',d22:'Cópias de documentos',d23:'Cobertores extra',d24:'Roupa quente sobresselente',d25:'Jogos / cartas'},
+  es:{d1:'Agua potable',d2:'Conservas (atún/sardina)',d3:'Judías / garbanzos en lata',d4:'Pasta o arroz',d5:'Galletas / tostadas',d6:'Frutos secos / nueces',d7:'Barritas energéticas',d8:'Chocolate',d9:'Leche UHT',d10:'Miel',d11:'Kit de primeros auxilios',d12:'Antihistamínico + antidiarreico',d13:'Carbón activado',d14:'Medicación habitual (7d)',d15:'Linterna a pilas',d16:'Pilas AA/AAA extra',d17:'Velas',d18:'Cerillas / mechero',d19:'Radio portátil a pilas',d20:'Powerbank cargado',d21:'Dinero en efectivo',d22:'Copias de documentos',d23:'Mantas extra',d24:'Ropa de abrigo de repuesto',d25:'Juegos / cartas'},
+  it:{d1:'Acqua potabile',d2:'Conserve (tonno/sardine)',d3:'Fagioli / ceci in scatola',d4:'Pasta o riso',d5:'Biscotti / crackers',d6:'Frutta secca / noci',d7:'Barrette energetiche',d8:'Cioccolato',d9:'Latte UHT',d10:'Miele',d11:'Kit di pronto soccorso',d12:'Antistaminico + antidiarroico',d13:'Carbone attivo',d14:'Farmaci abituali (7gg)',d15:'Torcia a batterie',d16:'Batterie AA/AAA extra',d17:'Candele',d18:'Fiammiferi / accendino',d19:'Radio portatile a batterie',d20:'Powerbank carico',d21:'Contanti',d22:'Copie dei documenti',d23:'Coperte extra',d24:'Indumenti caldi di ricambio',d25:'Giochi / carte'},
+  fr:{d1:'Eau potable',d2:'Conserves (thon/sardine)',d3:'Haricots / pois chiches en boîte',d4:'Pâtes ou riz',d5:'Biscuits / biscottes',d6:'Fruits secs / noix',d7:'Barres énergétiques',d8:'Chocolat',d9:'Lait UHT',d10:'Miel',d11:'Kit de premiers secours',d12:'Antihistaminique + antidiarrhéique',d13:'Charbon actif',d14:'Médicaments habituels (7j)',d15:'Lampe de poche à piles',d16:'Piles AA/AAA supplémentaires',d17:'Bougies',d18:'Allumettes / briquet',d19:'Radio portable à piles',d20:'Powerbank chargé',d21:'Espèces',d22:'Copies de documents',d23:'Couvertures supplémentaires',d24:'Vêtements chauds de rechange',d25:'Jeux / cartes'},
+  de:{d1:'Trinkwasser',d2:'Konserven (Thunfisch/Sardine)',d3:'Bohnen / Kichererbsen in Dose',d4:'Nudeln oder Reis',d5:'Kekse / Knäckebrot',d6:'Trockenfrüchte / Nüsse',d7:'Energieriegel',d8:'Schokolade',d9:'H-Milch',d10:'Honig',d11:'Erste-Hilfe-Set',d12:'Antihistaminikum + Mittel gegen Durchfall',d13:'Aktivkohle',d14:'Medikamente (7 Tage)',d15:'Taschenlampe (Batterien)',d16:'Ersatzbatterien AA/AAA',d17:'Kerzen',d18:'Streichhölzer / Feuerzeug',d19:'Tragbares Radio (Batterien)',d20:'Aufgeladene Powerbank',d21:'Bargeld',d22:'Dokumentenkopien',d23:'Zusatzdecken',d24:'Warme Ersatzkleidung',d25:'Spiele / Karten'},
+  en:{d1:'Drinking water',d2:'Tinned fish (tuna/sardine)',d3:'Tinned beans / chickpeas',d4:'Pasta or rice',d5:'Biscuits / crackers',d6:'Dried fruit / nuts',d7:'Energy bars',d8:'Chocolate',d9:'UHT milk',d10:'Honey',d11:'First aid kit',d12:'Antihistamine + anti-diarrhoeal',d13:'Activated charcoal',d14:'Regular medication (7d)',d15:'Battery torch',d16:'Spare AA/AAA batteries',d17:'Candles',d18:'Matches / lighter',d19:'Portable battery radio',d20:'Charged powerbank',d21:'Cash',d22:'Document copies',d23:'Extra blankets',d24:'Spare warm clothing',d25:'Games / cards'},
+};
+
+function itemName(item){
+  const names=ITEM_NAMES[currentLang]||ITEM_NAMES.pt;
+  return names[item.id] || item.name;
+}
+
+// Unit label translations for default items
+const UNIT_TR={
+  litros:   {es:'litros',it:'litri',fr:'litres',de:'Liter',en:'litres'},
+  latas:    {es:'latas',it:'lattine',fr:'boîtes',de:'Dosen',en:'tins'},
+  kg:       {es:'kg',it:'kg',fr:'kg',de:'kg',en:'kg'},
+  pacotes:  {es:'paquetes',it:'pacchetti',fr:'paquets',de:'Päckchen',en:'packets'},
+  g:        {es:'g',it:'g',fr:'g',de:'g',en:'g'},
+  'unid.':  {es:'ud.',it:'pz.',fr:'u.',de:'Stk.',en:'units'},
+  tabletes: {es:'tabletas',it:'tavolette',fr:'tablettes',de:'Tafeln',en:'bars'},
+  frascos:  {es:'frascos',it:'vasetti',fr:'pots',de:'Gläser',en:'jars'},
+  kit:      {es:'kit',it:'kit',fr:'kit',de:'Set',en:'kit'},
+  cx:       {es:'cj.',it:'cf.',fr:'bte',de:'Pkg.',en:'box'},
+  set:      {es:'set',it:'set',fr:'set',de:'Set',en:'set'},
+  packs:    {es:'packs',it:'pack',fr:'packs',de:'Päck.',en:'packs'},
+  pack:     {es:'pack',it:'pack',fr:'pack',de:'Pack',en:'pack'},
+  muda:     {es:'muda',it:'cambio',fr:'tenue',de:'Wechsel',en:'change'},
+  '€':      {es:'€',it:'€',fr:'€',de:'€',en:'€'},
+};
+
+function itemUnit(unit){
+  if(currentLang==='pt') return unit;
+  return UNIT_TR[unit]?.[currentLang] || unit;
+}
+
 // ── PERSIST
 function load(){
   try {
@@ -1675,7 +1856,7 @@ function renderItem(item){
     const displayVal=userVal||suggestedVal;
     targetTxt=`≈ ${displayVal} € ${userVal?t('defined'):t('suggested')}`;
   } else {
-    targetTxt=item.fixed?`${target} ${item.unit} (${t('fixed_qty')})`:`${t('needed')}: ${target} ${item.unit}`;
+    targetTxt=item.fixed?`${target} ${itemUnit(item.unit)} (${t('fixed_qty')})`:`${t('needed')}: ${target} ${itemUnit(item.unit)}`;
   }
 
   const moneyNote = t('money_note');
@@ -1731,7 +1912,7 @@ function renderItem(item){
           </svg>
         </div>
         <div class="card-content">
-          <div class="item-name">${item.emoji?`<span class="item-emoji">${item.emoji}</span> `:''}${item.name}</div>
+          <div class="item-name">${item.emoji?`<span class="item-emoji">${item.emoji}</span> `:''}${itemName(item)}</div>
           <div class="item-target">${targetTxt}</div>
           ${moneyBlock}
         </div>
@@ -1869,7 +2050,7 @@ function deleteItem(id){
   if(!item)return;
   showConfirm({
     icon:'🗑️',
-    title:`${t('confirm_remove_item_title')} "${item.name}"?`,
+    title:`${t('confirm_remove_item_title')} "${itemName(item)}"?`,
     sub:t('confirm_remove_item'),
     cb:()=>{ S.items=S.items.filter(i=>i.id!==id); save();render(); }
   });
@@ -1927,6 +2108,89 @@ function addItem(){
   closeSheet();
   ['f-name','f-unit','f-qty'].forEach(id=>document.getElementById(id).value='');
   save();render();
+}
+
+// ── SHARE ────────────────────────────────────────────────
+const APP_URL = 'http://kit72h.monco.io';
+
+function shareApp(){
+  // Try native Web Share API first (mobile)
+  if (navigator.share) {
+    navigator.share({
+      title: 'KIT72H — Kit de emergência 72h',
+      text: '🛡️ Prepara o teu kit de emergência para 72 horas!',
+      url: APP_URL
+    }).catch(()=>{});
+    return;
+  }
+  // Fallback: copy to clipboard
+  navigator.clipboard.writeText(APP_URL).then(()=>{
+    const toast = document.getElementById('share-toast');
+    toast.classList.add('show');
+    setTimeout(()=> toast.classList.remove('show'), 2200);
+  }).catch(()=>{
+    // Last resort: prompt
+    window.prompt('Copia o link:', APP_URL);
+  });
+}
+
+// ── BACKUP ───────────────────────────────────────────────
+function saveBackup(){
+  const payload = {
+    version: 1,
+    exported: new Date().toISOString(),
+    people: S.people,
+    hours: S.hours,
+    lang: S.lang,
+    moneyVal: S.moneyVal,
+    items: S.items
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const date = new Date().toISOString().slice(0,10);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `kit72h-backup-${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showBackupStatus('✅ Backup guardado!');
+}
+
+function triggerLoad(){
+  document.getElementById('load-file').value='';
+  document.getElementById('load-file').click();
+}
+
+function loadBackup(event){
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const payload = JSON.parse(e.target.result);
+      if (!payload.items || !Array.isArray(payload.items)) throw new Error('Formato inválido');
+      S.people   = payload.people   ?? S.people;
+      S.hours    = payload.hours    ?? S.hours;
+      S.lang     = payload.lang     ?? S.lang;
+      S.moneyVal = payload.moneyVal ?? S.moneyVal;
+      S.items    = payload.items;
+      currentLang = S.lang;
+      save();
+      applyLang();
+      render();
+      const d = payload.exported ? new Date(payload.exported).toLocaleDateString('pt-PT') : '—';
+      showBackupStatus(`✅ Backup de ${d} restaurado!`);
+    } catch(err) {
+      showBackupStatus('❌ Ficheiro inválido.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function showBackupStatus(msg){
+  const el = document.getElementById('backup-status');
+  el.textContent = msg;
+  setTimeout(()=>{ el.textContent=''; }, 4000);
 }
 
 // ── PWA INSTALL
