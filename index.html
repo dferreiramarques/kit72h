@@ -95,10 +95,22 @@
       font-family: var(--font-family);
       font-size: var(--font-size-label);
       color: var(--primary-text-color);
-      background-color: var(--primary-background-color);
+      background-color: #0a0b14;
       min-height: 100dvh;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Desktop centering wrapper */
+    #app {
+      width: 100%;
+      max-width: 1120px;
+      background: var(--primary-background-color);
+      position: relative;
+      min-height: 100dvh;
+      box-shadow: 0 0 60px rgba(0,0,0,0.6);
     }
 
     /* ═══════════════════════════════════════════
@@ -748,7 +760,7 @@
     .fab {
       position: fixed;
       bottom: calc(24px + env(safe-area-inset-bottom));
-      right: var(--space-20);
+      right: max(var(--space-20), calc(50vw - 1120px/2 + var(--space-20)));
       width: 56px;
       height: 56px;
       border-radius: var(--border-radius-big);
@@ -882,25 +894,27 @@
     #install-banner {
       position: fixed;
       bottom: calc(88px + env(safe-area-inset-bottom));
-      left: var(--space-16); right: var(--space-16);
-      background: var(--dialog-background-color);
-      border: 1px solid var(--primary-color);
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(min(1120px, 100vw) - 32px);
+      background: #3d2800;
+      border: 1px solid #c97800;
       border-radius: var(--border-radius-medium);
       padding: var(--space-12) var(--space-16);
       display: none;
       align-items: center;
       gap: var(--space-12);
       z-index: 80;
-      box-shadow: var(--box-shadow-medium);
+      box-shadow: 0 4px 24px rgba(201,120,0,0.35);
     }
 
     #install-banner.show { display: flex; }
-    #install-banner p { font-size: 13px; flex: 1; color: var(--primary-text-color); }
-    #install-banner strong { color: var(--primary-color); }
+    #install-banner p { font-size: 13px; flex: 1; color: #ffd07a; }
+    #install-banner strong { color: #ffb300; font-weight: 700; }
 
     .btn-install {
-      background: var(--primary-color);
-      color: var(--text-color-on-primary);
+      background: #ffb300;
+      color: #1a1000;
       border: none;
       border-radius: var(--border-radius-small);
       padding: 8px 14px;
@@ -913,7 +927,7 @@
     .btn-close-banner {
       background: none;
       border: none;
-      color: var(--secondary-text-color);
+      color: #c97800;
       font-size: 20px;
       cursor: pointer;
       line-height: 1;
@@ -1102,8 +1116,7 @@
   </style>
 </head>
 <body>
-
-<!-- TOP BAR -->
+<div id="app">
 <div class="top-bar">
   <div class="top-bar-row1">
     <div class="app-title">KIT<span class="app-chip">72H</span></div>
@@ -1170,11 +1183,11 @@
 <!-- FILTER TABS -->
 <div class="filter-scroll">
   <button class="filter-tab active" onclick="setFilter(this,'todos')" data-i18n="all">Todos</button>
-  <button class="filter-tab" onclick="setFilter(this,'agua')">💧 <span data-i18n="cat_agua">Água</span></button>
-  <button class="filter-tab" onclick="setFilter(this,'alimentacao')">🥫 <span data-i18n="cat_alimentacao">Alimentos</span></button>
-  <button class="filter-tab" onclick="setFilter(this,'saude')">💊 <span data-i18n="cat_saude">Saúde</span></button>
-  <button class="filter-tab" onclick="setFilter(this,'energia')">🔦 <span data-i18n="cat_energia">Energia</span></button>
-  <button class="filter-tab" onclick="setFilter(this,'outros')">📦 <span data-i18n="cat_outros">Outros</span></button>
+  <button class="filter-tab" onclick="setFilter(this,'agua')"><span data-i18n="cat_agua">💧 Água</span></button>
+  <button class="filter-tab" onclick="setFilter(this,'alimentacao')"><span data-i18n="cat_alimentacao">🥫 Alimentos</span></button>
+  <button class="filter-tab" onclick="setFilter(this,'saude')"><span data-i18n="cat_saude">💊 Saúde</span></button>
+  <button class="filter-tab" onclick="setFilter(this,'energia')"><span data-i18n="cat_energia">🔦 Energia</span></button>
+  <button class="filter-tab" onclick="setFilter(this,'outros')"><span data-i18n="cat_outros">📦 Outros</span></button>
   <button class="filter-tab" onclick="setFilter(this,'alerta')">⚠️ <span data-i18n="alert">Alerta</span></button>
 </div>
 
@@ -1438,27 +1451,25 @@ function t(key){ return LANGS[currentLang][key] || LANGS['pt'][key] || key; }
 
 function applyLang(){
   // update static [data-i18n] elements
+  const catEmoji={agua:'💧',alimentacao:'🥫',saude:'💊',energia:'🔦',outros:'📦'};
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     const key=el.getAttribute('data-i18n');
     const txt=t(key);
-    if(key==='cat_agua')      el.textContent='💧 '+txt;
-    else if(key==='cat_alimentacao') el.textContent='🥫 '+txt;
-    else if(key==='cat_saude')       el.textContent='💊 '+txt;
-    else if(key==='cat_energia')     el.textContent='🔦 '+txt;
-    else if(key==='cat_outros')      el.textContent='📦 '+txt;
-    else if(key==='alert')           el.textContent='⚠️ '+txt;
-    else                             el.textContent=txt;
+    const isCat=key.startsWith('cat_');
+    const catKey=isCat?key.replace('cat_',''):null;
+    if(isCat){
+      // select options: plain text only (emoji already in value mapping below)
+      if(el.tagName==='OPTION') el.textContent=catEmoji[catKey]+' '+txt;
+      else el.textContent=catEmoji[catKey]+' '+txt; // spans in tabs
+    } else if(key==='alert'){
+      el.textContent=txt; // parent already has ⚠️
+    } else {
+      el.textContent=txt;
+    }
   });
   // placeholders
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
     el.placeholder=t(el.getAttribute('data-i18n-placeholder'));
-  });
-  // select options
-  ['agua','alimentacao','saude','energia','outros'].forEach(v=>{
-    const opt=document.querySelector(`#f-cat option[value="${v}"]`);
-    if(opt) opt.textContent = {
-      agua:'💧 ',alimentacao:'🥫 ',saude:'💊 ',energia:'🔦 ',outros:'📦 '
-    }[v] + t('cat_'+v);
   });
   // flag
   document.getElementById('lang-flag').textContent=LANGS[currentLang].flag;
@@ -1920,5 +1931,6 @@ if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(
 // ── INIT
 load(); applyLang(); render();
 </script>
+</div><!-- #app -->
 </body>
 </html>
