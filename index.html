@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html lang="pt" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="theme-color" content="#181b34"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="description" content="Kit 72h — Gestão de emergência familiar"/>
+  <title>Kit 72h</title>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* ═══════════════════════════════════════════
+       VIBE DESIGN SYSTEM — Dark theme tokens
+       Source: @vibe/core tokens.css .dark-app-theme
+    ═══════════════════════════════════════════ */
+    :root {
+      /* Motion */
+      --motion-productive-short: 70ms;
+      --motion-productive-medium: 100ms;
+      --motion-productive-long: 150ms;
+      --motion-timing-transition: cubic-bezier(0.4,0,0.2,1);
+
+      /* Spacing */
+      --space-2: 2px; --space-4: 4px; --space-8: 8px;
+      --space-12: 12px; --space-16: 16px; --space-20: 20px;
+      --space-24: 24px; --space-32: 32px; --space-40: 40px;
+
+      /* Border */
+      --border-radius-small: 4px;
+      --border-radius-medium: 8px;
+      --border-radius-big: 16px;
+
+      /* Typography */
+      --font-family: 'Figtree', Roboto, sans-serif;
+      --title-font-family: 'Poppins', Roboto, sans-serif;
+      --font-size-subtext: 12px;
+      --font-size-label: 14px;
+      --font-size-paragraph: 16px;
+      --font-size-h5: 16px;
+      --font-size-h4: 18px;
+      --font-size-h3: 24px;
+
+      /* Shadows */
+      --box-shadow-small: 0px 4px 8px rgba(9,11,25,0.5);
+      --box-shadow-medium: 0px 6px 20px rgba(9,11,25,0.5);
+
+      /* ── Dark theme semantic tokens ── */
+      --primary-color: #0073ea;
+      --primary-hover-color: #0060b9;
+      --primary-selected-color: #133774;
+      --primary-text-color: #d5d8df;
+      --secondary-text-color: #9699a6;
+      --text-color-on-primary: #ffffff;
+      --primary-background-color: #181b34;
+      --secondary-background-color: #30324e;
+      --allgrey-background-color: #30324e;
+      --ui-border-color: #797e93;
+      --ui-background-color: #434660;
+      --layout-border-color: #4b4e69;
+      --placeholder-color: #c3c6d4;
+      --icon-color: #c3c6d4;
+      --disabled-background-color: #3c3f59;
+      --link-color: #69a7ef;
+      --positive-color: #00854d;
+      --positive-color-hover: #007038;
+      --positive-color-selected: #025231;
+      --negative-color: #d83a52;
+      --negative-color-hover: #b63546;
+      --negative-color-selected: #642830;
+      --warning-color: #ffcb00;
+      --warning-color-hover: #eaaa15;
+      --warning-color-selected: #503e02;
+      --color-surface: #292f4c;
+      --dark-background-color: #393b53;
+      --dialog-background-color: #30324e;
+
+      /* Vibe status colors (real palette) */
+      --color-done-green: #00c875;
+      --color-working-orange: #fdab3d;
+      --color-stuck-red: #df2f4a;
+      --color-egg-yolk: #ffcb00;
+    }
+
+    /* ═══════════════════════════════════════════
+       RESET & BASE
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { height: 100%; }
+
+    body {
+      font-family: var(--font-family);
+      font-size: var(--font-size-label);
+      color: var(--primary-text-color);
+      background-color: var(--primary-background-color);
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ═══════════════════════════════════════════
+       TOP BAR
+    ═══════════════════════════════════════════ */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--primary-background-color);
+      border-bottom: 1px solid var(--layout-border-color);
+      padding: var(--space-12) var(--space-16);
+    }
+
+    .top-bar-row1 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-12);
+    }
+
+    .app-title {
+      font-family: var(--title-font-family);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary-text-color);
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+    }
+
+    .app-chip {
+      font-family: var(--font-family);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      background: var(--primary-color);
+      color: var(--text-color-on-primary);
+      padding: 2px 8px;
+      border-radius: var(--border-radius-small);
+    }
+
+    /* Controls row */
+    .controls-row {
+      display: flex;
+      gap: var(--space-8);
+    }
+
+    .counter-pill {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--secondary-background-color);
+      border: 1px solid var(--ui-border-color);
+      border-radius: var(--border-radius-medium);
+      padding: var(--space-8) var(--space-12);
+    }
+
+    .counter-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--secondary-text-color);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .counter-inner {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+    }
+
+    .stepper-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--border-radius-small);
+      border: 1px solid var(--ui-border-color);
+      background: var(--ui-background-color);
+      color: var(--primary-text-color);
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--motion-productive-short) var(--motion-timing-transition),
+                  border-color var(--motion-productive-short) var(--motion-timing-transition);
+      touch-action: manipulation;
+    }
+
+    .stepper-btn:active {
+      background: var(--primary-selected-color);
+      border-color: var(--primary-color);
+    }
+
+    .stepper-val {
+      font-family: var(--title-font-family);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary-color);
+      min-width: 26px;
+      text-align: center;
+    }
+
+    /* ═══════════════════════════════════════════
+       STAT CARDS
+    ═══════════════════════════════════════════ */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-8);
+      padding: var(--space-16) var(--space-16) 0;
+    }
+
+    .stat-card {
+      background: var(--secondary-background-color);
+      border: 1px solid var(--layout-border-color);
+      border-radius: var(--border-radius-medium);
+      padding: var(--space-12);
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: var(--title-font-family);
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--primary-text-color);
+    }
+
+    .stat-number.clr-ok     { color: var(--color-done-green); }
+    .stat-number.clr-warn   { color: var(--color-working-orange); }
+    .stat-number.clr-danger { color: var(--negative-color); }
+    .stat-number.clr-brand  { color: var(--primary-color); }
+
+    .stat-desc {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--secondary-text-color);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-top: var(--space-4);
+    }
+
+    /* ═══════════════════════════════════════════
+       PROGRESS
+    ═══════════════════════════════════════════ */
+    .progress-wrap {
+      padding: var(--space-12) var(--space-16) 0;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--secondary-text-color);
+      margin-bottom: var(--space-4);
+    }
+
+    .progress-track {
+      height: 4px;
+      background: var(--ui-background-color);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--color-done-green);
+      border-radius: 99px;
+      transition: width 0.4s var(--motion-timing-transition);
+    }
+
+    /* ═══════════════════════════════════════════
+       FILTER TABS
+    ═══════════════════════════════════════════ */
+    .filter-scroll {
+      display: flex;
+      gap: var(--space-8);
+      padding: var(--space-12) var(--space-16);
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .filter-scroll::-webkit-scrollbar { display: none; }
+
+    .filter-tab {
+      flex-shrink: 0;
+      font-family: var(--font-family);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--ui-border-color);
+      background: transparent;
+      color: var(--secondary-text-color);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all var(--motion-productive-short) var(--motion-timing-transition);
+      touch-action: manipulation;
+    }
+
+    .filter-tab.active {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      color: var(--text-color-on-primary);
+      font-weight: 600;
+    }
+
+    .filter-tab:not(.active):active {
+      background: var(--primary-selected-color);
+      border-color: var(--primary-color);
+      color: var(--primary-text-color);
+    }
+
+    /* ═══════════════════════════════════════════
+       SECTIONS & ITEMS
+    ═══════════════════════════════════════════ */
+    .list-body {
+      padding: 0 var(--space-16) 100px;
+    }
+
+    .cat-section {
+      margin-bottom: var(--space-24);
+    }
+
+    .cat-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      padding: var(--space-8) 0 var(--space-8);
+      border-bottom: 1px solid var(--layout-border-color);
+      margin-bottom: var(--space-12);
+    }
+
+    .cat-icon { font-size: 16px; }
+
+    .cat-title {
+      font-family: var(--title-font-family);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--secondary-text-color);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    .cat-count {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--secondary-text-color);
+      background: var(--ui-background-color);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    /* ── Item card ── */
+    .item-card {
+      background: var(--secondary-background-color);
+      border: 1px solid var(--layout-border-color);
+      border-left-width: 3px;
+      border-left-color: var(--ui-border-color);
+      border-radius: var(--border-radius-medium);
+      margin-bottom: var(--space-8);
+      overflow: hidden;
+      transition: border-left-color var(--motion-productive-medium) var(--motion-timing-transition);
+      animation: slideIn 0.2s var(--motion-timing-transition);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .item-card.status-ok     { border-left-color: var(--color-done-green); }
+    .item-card.status-warn   { border-left-color: var(--color-working-orange); }
+    .item-card.status-danger { border-left-color: var(--negative-color); }
+    .item-card.status-urgent { border-left-color: var(--color-stuck-red); border-color: rgba(223,47,74,0.25); }
+    .item-card.status-expired{ border-left-color: var(--ui-border-color); opacity: 0.6; }
+    .item-card.is-checked    {
+      background: rgba(0,200,117,0.07);
+      border-color: rgba(0,200,117,0.25);
+      border-left-color: var(--color-done-green);
+    }
+    .item-card.is-checked .item-name {
+      color: var(--color-done-green);
+      font-weight: 700;
+    }
+
+    .card-inner {
+      padding: var(--space-12) var(--space-12) var(--space-12) var(--space-12);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-10, 10px);
+    }
+
+    /* Checkbox */
+    .vibe-checkbox {
+      width: 20px;
+      height: 20px;
+      border-radius: var(--border-radius-small);
+      border: 2px solid var(--ui-border-color);
+      background: transparent;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--motion-productive-short) var(--motion-timing-transition);
+      touch-action: manipulation;
+    }
+
+    .vibe-checkbox.checked {
+      background: var(--color-done-green);
+      border-color: var(--color-done-green);
+    }
+
+    .vibe-checkbox svg {
+      display: none;
+      width: 12px;
+      height: 12px;
+    }
+
+    .vibe-checkbox.checked svg { display: block; }
+
+    .card-content { flex: 1; min-width: 0; }
+
+    .item-name {
+      font-weight: 600;
+      font-size: var(--font-size-label);
+      color: var(--primary-text-color);
+      margin-bottom: var(--space-2);
+    }
+
+    .item-target {
+      font-size: 12px;
+      color: var(--link-color);
+      font-weight: 500;
+    }
+
+    /* Delete btn */
+    .card-actions { flex-shrink: 0; }
+
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--border-radius-medium);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--secondary-text-color);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all var(--motion-productive-short) var(--motion-timing-transition);
+      touch-action: manipulation;
+    }
+
+    .icon-btn:active {
+      background: var(--negative-color-selected);
+      border-color: var(--negative-color);
+      color: var(--negative-color);
+    }
+
+    /* ── Confirm dialog ── */
+    .confirm-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(41,47,76,0.75);
+      backdrop-filter: blur(4px);
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--motion-productive-medium) var(--motion-timing-transition);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .confirm-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .confirm-sheet {
+      background: var(--dialog-background-color);
+      border-radius: var(--border-radius-big) var(--border-radius-big) 0 0;
+      padding: var(--space-20) var(--space-20) calc(var(--space-24) + env(safe-area-inset-bottom));
+      width: 100%;
+      max-width: 600px;
+      transform: translateY(100%);
+      transition: transform 0.25s cubic-bezier(0.34,1.2,0.64,1);
+    }
+
+    .confirm-backdrop.open .confirm-sheet {
+      transform: translateY(0);
+    }
+
+    .confirm-handle {
+      width: 36px; height: 4px;
+      background: var(--ui-border-color);
+      border-radius: 99px;
+      margin: 0 auto var(--space-16);
+    }
+
+    .confirm-icon {
+      font-size: 32px;
+      text-align: center;
+      margin-bottom: var(--space-8);
+    }
+
+    .confirm-title {
+      font-family: var(--title-font-family);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary-text-color);
+      text-align: center;
+      margin-bottom: var(--space-4);
+    }
+
+    .confirm-sub {
+      font-size: 13px;
+      color: var(--secondary-text-color);
+      text-align: center;
+      margin-bottom: var(--space-20);
+      line-height: 1.5;
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: var(--space-8);
+    }
+
+    .btn-cancel {
+      flex: 1;
+      padding: 13px;
+      border-radius: var(--border-radius-medium);
+      border: 1px solid var(--ui-border-color);
+      background: transparent;
+      color: var(--primary-text-color);
+      font-family: var(--font-family);
+      font-size: var(--font-size-label);
+      font-weight: 600;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: background var(--motion-productive-short) var(--motion-timing-transition);
+    }
+
+    .btn-cancel:active { background: var(--ui-background-color); }
+
+    .btn-destructive {
+      flex: 1;
+      padding: 13px;
+      border-radius: var(--border-radius-medium);
+      border: none;
+      background: var(--negative-color);
+      color: #fff;
+      font-family: var(--title-font-family);
+      font-size: var(--font-size-label);
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: background var(--motion-productive-short) var(--motion-timing-transition);
+    }
+
+    .btn-destructive:active { background: var(--negative-color-hover); }
+
+    /* ── Item note (money, etc.) ── */
+    .item-note {
+      margin-top: var(--space-8);
+      padding: var(--space-8) var(--space-12);
+      background: rgba(0,115,234,0.08);
+      border: 1px solid rgba(0,115,234,0.2);
+      border-radius: var(--border-radius-small);
+      font-size: 12px;
+      color: var(--link-color);
+      line-height: 1.5;
+    }
+
+    /* ── Money input ── */
+    .money-input-wrap {
+      margin-top: var(--space-8);
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      background: var(--ui-background-color);
+      border: 1px solid var(--ui-border-color);
+      border-radius: var(--border-radius-medium);
+      padding: var(--space-8) var(--space-12);
+      transition: border-color var(--motion-productive-short) var(--motion-timing-transition);
+    }
+
+    .money-input-wrap:focus-within {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(0,115,234,0.2);
+    }
+
+    .money-currency {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-egg-yolk);
+      flex-shrink: 0;
+    }
+
+    .money-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: var(--title-font-family);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary-text-color);
+      width: 100%;
+    }
+
+    .money-input::placeholder { color: var(--placeholder-color); font-weight: 400; }
+
+    .money-suffix {
+      font-size: 12px;
+      color: var(--secondary-text-color);
+      flex-shrink: 0;
+    }
+
+    /* ── Expiry area ── */
+    .expiry-area {
+      margin-top: var(--space-12);
+      padding-top: var(--space-12);
+      border-top: 1px solid var(--layout-border-color);
+    }
+
+    .expiry-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-8);
+    }
+
+    .expiry-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--secondary-text-color);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    /* Vibe status badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+
+    .badge-ok      { background: rgba(0,200,117,0.12); color: var(--color-done-green); }
+    .badge-warn    { background: rgba(253,171,61,0.12); color: var(--color-working-orange); }
+    .badge-danger  { background: rgba(216,58,82,0.12);  color: var(--negative-color); }
+    .badge-urgent  { background: rgba(223,47,74,0.18);  color: var(--color-stuck-red); border: 1px solid rgba(223,47,74,0.3); animation: blink 1.5s ease-in-out infinite; }
+    .badge-expired { background: rgba(150,153,166,0.15); color: var(--secondary-text-color); }
+    .badge-none    { background: var(--ui-background-color); color: var(--secondary-text-color); }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+    /* Unit list */
+    .unit-list { display: flex; flex-direction: column; gap: var(--space-4); margin-bottom: var(--space-8); }
+
+    .unit-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      background: var(--color-surface);
+      border-radius: var(--border-radius-small);
+      padding: 6px var(--space-8);
+      font-size: 12px;
+    }
+
+    .unit-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-ok      { background: var(--color-done-green); }
+    .dot-warn    { background: var(--color-working-orange); }
+    .dot-danger  { background: var(--negative-color); }
+    .dot-urgent  { background: var(--color-stuck-red); }
+    .dot-expired { background: var(--secondary-text-color); }
+
+    .unit-lbl { flex: 1; color: var(--primary-text-color); }
+    .unit-date { color: var(--secondary-text-color); }
+    .unit-rm { cursor: pointer; color: var(--secondary-text-color); font-size: 14px; padding: 0 2px; touch-action: manipulation; }
+    .unit-rm:active { color: var(--negative-color); }
+
+    /* Add unit row */
+    .add-unit-row { display: flex; gap: var(--space-8); }
+
+    .vibe-date-input {
+      flex: 1;
+      min-width: 0;
+      background: var(--color-surface);
+      border: 1px solid var(--ui-border-color);
+      border-radius: var(--border-radius-medium);
+      color: var(--primary-text-color);
+      font-family: var(--font-family);
+      font-size: 13px;
+      padding: 8px var(--space-12);
+      outline: none;
+      transition: border-color var(--motion-productive-short) var(--motion-timing-transition);
+      -webkit-appearance: none;
+    }
+
+    .vibe-date-input:focus { border-color: var(--primary-color); }
+
+    .btn-ghost {
+      flex-shrink: 0;
+      padding: 8px var(--space-12);
+      border-radius: var(--border-radius-medium);
+      border: 1px solid var(--primary-color);
+      background: transparent;
+      color: var(--primary-color);
+      font-family: var(--font-family);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      touch-action: manipulation;
+      transition: all var(--motion-productive-short) var(--motion-timing-transition);
+    }
+
+    .btn-ghost:active {
+      background: var(--primary-selected-color);
+    }
+
+    /* ═══════════════════════════════════════════
+       FAB
+    ═══════════════════════════════════════════ */
+    .fab {
+      position: fixed;
+      bottom: calc(24px + env(safe-area-inset-bottom));
+      right: var(--space-20);
+      width: 56px;
+      height: 56px;
+      border-radius: var(--border-radius-big);
+      border: none;
+      background: var(--primary-color);
+      color: var(--text-color-on-primary);
+      font-size: 26px;
+      font-weight: 300;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--box-shadow-medium);
+      z-index: 90;
+      touch-action: manipulation;
+      transition: transform var(--motion-productive-short) var(--motion-timing-transition),
+                  background var(--motion-productive-short) var(--motion-timing-transition);
+    }
+
+    .fab:active {
+      transform: scale(0.94);
+      background: var(--primary-hover-color);
+    }
+
+    /* ═══════════════════════════════════════════
+       BOTTOM SHEET MODAL
+    ═══════════════════════════════════════════ */
+    .sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(41,47,76,0.75);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--motion-expressive-short, 250ms) var(--motion-timing-transition);
+    }
+
+    .sheet-backdrop.open { opacity: 1; pointer-events: all; }
+
+    .bottom-sheet {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--dialog-background-color);
+      border-radius: var(--border-radius-big) var(--border-radius-big) 0 0;
+      padding: var(--space-20) var(--space-20) calc(var(--space-32) + env(safe-area-inset-bottom));
+      z-index: 201;
+      max-width: 600px;
+      margin: 0 auto;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.34,1.2,0.64,1);
+      max-height: 92dvh;
+      overflow-y: auto;
+    }
+
+    .sheet-backdrop.open .bottom-sheet {
+      transform: translateY(0);
+    }
+
+    .sheet-handle {
+      width: 36px; height: 4px;
+      background: var(--ui-border-color);
+      border-radius: 99px;
+      margin: 0 auto var(--space-20);
+    }
+
+    .sheet-title {
+      font-family: var(--title-font-family);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary-text-color);
+      margin-bottom: var(--space-20);
+    }
+
+    /* Form fields */
+    .form-field { margin-bottom: var(--space-16); }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--secondary-text-color);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: var(--space-4);
+    }
+
+    .vibe-input, .vibe-select {
+      width: 100%;
+      background: var(--color-surface);
+      border: 1px solid var(--ui-border-color);
+      border-radius: var(--border-radius-medium);
+      color: var(--primary-text-color);
+      font-family: var(--font-family);
+      font-size: var(--font-size-label);
+      padding: 12px var(--space-16);
+      outline: none;
+      transition: border-color var(--motion-productive-short) var(--motion-timing-transition),
+                  box-shadow var(--motion-productive-short) var(--motion-timing-transition);
+      -webkit-appearance: none;
+    }
+
+    .vibe-input:focus, .vibe-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(0,115,234,0.2);
+    }
+
+    .vibe-select option { background: var(--dialog-background-color); }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--primary-color);
+      border: none;
+      border-radius: var(--border-radius-medium);
+      color: var(--text-color-on-primary);
+      font-family: var(--title-font-family);
+      font-size: var(--font-size-label);
+      font-weight: 700;
+      padding: 14px;
+      cursor: pointer;
+      margin-top: var(--space-8);
+      touch-action: manipulation;
+      transition: background var(--motion-productive-short) var(--motion-timing-transition);
+    }
+
+    .btn-primary:active { background: var(--primary-hover-color); }
+
+    /* ═══════════════════════════════════════════
+       INSTALL BANNER
+    ═══════════════════════════════════════════ */
+    #install-banner {
+      position: fixed;
+      bottom: calc(88px + env(safe-area-inset-bottom));
+      left: var(--space-16); right: var(--space-16);
+      background: var(--dialog-background-color);
+      border: 1px solid var(--primary-color);
+      border-radius: var(--border-radius-medium);
+      padding: var(--space-12) var(--space-16);
+      display: none;
+      align-items: center;
+      gap: var(--space-12);
+      z-index: 80;
+      box-shadow: var(--box-shadow-medium);
+    }
+
+    #install-banner.show { display: flex; }
+    #install-banner p { font-size: 13px; flex: 1; color: var(--primary-text-color); }
+    #install-banner strong { color: var(--primary-color); }
+
+    .btn-install {
+      background: var(--primary-color);
+      color: var(--text-color-on-primary);
+      border: none;
+      border-radius: var(--border-radius-small);
+      padding: 8px 14px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-close-banner {
+      background: none;
+      border: none;
+      color: var(--secondary-text-color);
+      font-size: 20px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    /* ═══════════════════════════════════════════
+       EMPTY STATE
+    ═══════════════════════════════════════════ */
+    .empty-state {
+      text-align: center;
+      padding: var(--space-40) var(--space-20);
+    }
+
+    .empty-icon { font-size: 48px; margin-bottom: var(--space-12); }
+
+    .empty-title {
+      font-family: var(--title-font-family);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary-text-color);
+      margin-bottom: var(--space-4);
+    }
+
+    .empty-sub { font-size: 13px; color: var(--secondary-text-color); }
+
+    /* ── Emoji ── */
+    .item-emoji {
+      display: inline-block;
+      font-size: 18px;
+      line-height: 1;
+      vertical-align: middle;
+      margin-right: 2px;
+      transition: transform 0.2s cubic-bezier(0.34,1.8,0.64,1);
+    }
+
+    .item-card:not(.is-checked):hover .item-emoji,
+    .item-card:not(.is-checked):focus-within .item-emoji {
+      transform: scale(1.3) rotate(-5deg);
+    }
+
+    /* ── Checkbox bounce ── */
+    @keyframes checkBounce {
+      0%   { transform: scale(1); }
+      30%  { transform: scale(0.75); }
+      60%  { transform: scale(1.25); }
+      80%  { transform: scale(0.92); }
+      100% { transform: scale(1); }
+    }
+
+    .vibe-checkbox.bounce {
+      animation: checkBounce 0.4s cubic-bezier(0.34,1.5,0.64,1);
+    }
+
+    /* ── Stepper number pop ── */
+    @keyframes numPop {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.4); }
+      100% { transform: scale(1); }
+    }
+
+    .stepper-val.popping {
+      animation: numPop 0.3s cubic-bezier(0.34,1.8,0.64,1);
+    }
+
+    /* ── Card checked — green tint handled above ── */
+
+    /* ── FAB wiggle on hover ── */
+    @keyframes fabWiggle {
+      0%,100% { transform: rotate(0deg); }
+      20%  { transform: rotate(-12deg); }
+      40%  { transform: rotate(10deg); }
+      60%  { transform: rotate(-6deg); }
+      80%  { transform: rotate(4deg); }
+    }
+
+    .fab:hover { animation: fabWiggle 0.5s ease; }
+
+    /* ── Progress bar shimmer ── */
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .progress-bar {
+      background-size: 200% auto;
+      background-image: linear-gradient(90deg,
+        var(--color-done-green) 0%,
+        #5dffa5 40%,
+        var(--color-done-green) 60%,
+        var(--color-done-green) 100%);
+      animation: shimmer 2.5s linear infinite;
+    }
+
+    /* ── Stat card number count-up bounce ── */
+    @keyframes statPop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .stat-number.just-changed {
+      animation: statPop 0.25s cubic-bezier(0.34,1.8,0.64,1);
+    }
+
+    /* ── New unit row appear ── */
+    @keyframes unitSlideIn {
+      from { opacity: 0; transform: translateX(-8px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .unit-row { animation: unitSlideIn 0.2s var(--motion-timing-transition); }
+
+    /* ── Tab active indicator bounce ── */
+    @keyframes tabPop {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(0.92); }
+      70%  { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+
+    .filter-tab.active { animation: tabPop 0.25s ease; }
+
+    /* ── Scrollbar ── */
+    /* ── Language picker ── */
+    .lang-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--secondary-background-color);
+      border: 1px solid var(--ui-border-color);
+      border-radius: var(--border-radius-medium);
+      padding: 6px 10px;
+      color: var(--primary-text-color);
+      font-size: 15px;
+      cursor: pointer;
+      position: relative;
+      touch-action: manipulation;
+      transition: border-color var(--motion-productive-short) var(--motion-timing-transition);
+    }
+    .lang-btn:active { border-color: var(--primary-color); }
+
+    .lang-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--dialog-background-color);
+      border: 1px solid var(--layout-border-color);
+      border-radius: var(--border-radius-medium);
+      box-shadow: var(--box-shadow-medium);
+      overflow: hidden;
+      z-index: 200;
+      min-width: 160px;
+      display: none;
+      flex-direction: column;
+      animation: menuDrop 0.18s cubic-bezier(0.34,1.4,0.64,1);
+    }
+
+    @keyframes menuDrop {
+      from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .lang-menu.open { display: flex; }
+
+    .lang-menu button {
+      background: none;
+      border: none;
+      color: var(--primary-text-color);
+      font-family: var(--font-family);
+      font-size: 14px;
+      padding: 11px 16px;
+      text-align: left;
+      cursor: pointer;
+      transition: background var(--motion-productive-short) var(--motion-timing-transition);
+    }
+
+    .lang-menu button:hover,
+    .lang-menu button.active-lang { background: var(--primary-selected-color); color: var(--link-color); }
+
+    /* top-bar-row1 needs relative for dropdown positioning */
+    .top-bar-row1 { position: relative; }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--ui-border-color); border-radius: 99px; }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-row1">
+    <div class="app-title">KIT<span class="app-chip">72H</span></div>
+    <button class="lang-btn" id="lang-btn" onclick="toggleLangMenu()" aria-label="Idioma">
+      <span id="lang-flag">🇵🇹</span>
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" style="opacity:.6"><path d="M2 4l4 4 4-4"/></svg>
+    </button>
+    <div class="lang-menu" id="lang-menu">
+      <button onclick="setLang('pt')">🇵🇹 Português</button>
+      <button onclick="setLang('es')">🇪🇸 Español</button>
+      <button onclick="setLang('it')">🇮🇹 Italiano</button>
+      <button onclick="setLang('fr')">🇫🇷 Français</button>
+      <button onclick="setLang('de')">🇩🇪 Deutsch</button>
+      <button onclick="setLang('en')">🇬🇧 English</button>
+    </div>
+  </div>
+  <div class="controls-row">
+    <div class="counter-pill">
+      <span class="counter-label" data-i18n="people">Pessoas</span>
+      <div class="counter-inner">
+        <button class="stepper-btn" onclick="changePeople(-1)">−</button>
+        <span class="stepper-val" id="val-people">4</span>
+        <button class="stepper-btn" onclick="changePeople(1)">+</button>
+      </div>
+    </div>
+    <div class="counter-pill">
+      <span class="counter-label" data-i18n="hours">Horas</span>
+      <div class="counter-inner">
+        <button class="stepper-btn" onclick="changeHours(-24)">−</button>
+        <span class="stepper-val" id="val-hours">72</span>
+        <button class="stepper-btn" onclick="changeHours(24)">+</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-number clr-brand" id="s-total">0</div>
+    <div class="stat-desc" data-i18n="items">Artigos</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number" id="s-ok">0</div>
+    <div class="stat-desc">OK</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number" id="s-alert">0</div>
+    <div class="stat-desc" data-i18n="attention">Atenção</div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-meta">
+    <span data-i18n="preparation">Preparação</span>
+    <span id="prog-pct">0%</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-bar" id="prog-bar" style="width:0%"></div>
+  </div>
+</div>
+
+<!-- FILTER TABS -->
+<div class="filter-scroll">
+  <button class="filter-tab active" onclick="setFilter(this,'todos')" data-i18n="all">Todos</button>
+  <button class="filter-tab" onclick="setFilter(this,'agua')">💧 <span data-i18n="cat_agua">Água</span></button>
+  <button class="filter-tab" onclick="setFilter(this,'alimentacao')">🥫 <span data-i18n="cat_alimentacao">Alimentos</span></button>
+  <button class="filter-tab" onclick="setFilter(this,'saude')">💊 <span data-i18n="cat_saude">Saúde</span></button>
+  <button class="filter-tab" onclick="setFilter(this,'energia')">🔦 <span data-i18n="cat_energia">Energia</span></button>
+  <button class="filter-tab" onclick="setFilter(this,'outros')">📦 <span data-i18n="cat_outros">Outros</span></button>
+  <button class="filter-tab" onclick="setFilter(this,'alerta')">⚠️ <span data-i18n="alert">Alerta</span></button>
+</div>
+
+<!-- ITEM LIST -->
+<div class="list-body" id="list-body"></div>
+
+<!-- FAB -->
+<button class="fab" onclick="openSheet()" aria-label="Adicionar artigo">+</button>
+
+<!-- BOTTOM SHEET -->
+<div class="sheet-backdrop" id="sheet" onclick="handleBackdropClick(event)">
+  <div class="bottom-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" data-i18n="add_item">Adicionar artigo</div>
+    <div class="form-field">
+      <label class="form-label" data-i18n="name">Nome</label>
+      <input class="vibe-input" type="text" id="f-name" data-i18n-placeholder="name_placeholder"/>
+    </div>
+    <div class="form-field">
+      <label class="form-label" data-i18n="category">Categoria</label>
+      <select class="vibe-select" id="f-cat" onchange="toggleExpiryField()">
+        <option value="agua" data-i18n="cat_agua">💧 Água</option>
+        <option value="alimentacao" data-i18n="cat_alimentacao">🥫 Alimentação</option>
+        <option value="saude" data-i18n="cat_saude">💊 Saúde</option>
+        <option value="energia" data-i18n="cat_energia">🔦 Energia</option>
+        <option value="outros" data-i18n="cat_outros">📦 Outros</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label class="form-label" data-i18n="unit">Unidade</label>
+      <input class="vibe-input" type="text" id="f-unit" data-i18n-placeholder="unit_placeholder"/>
+    </div>
+    <div class="form-field">
+      <label class="form-label" data-i18n="qty_label">Qtd. por pessoa/dia (0 = fixo)</label>
+      <input class="vibe-input" type="number" id="f-qty" placeholder="Ex: 1.5" step="0.5" min="0"/>
+    </div>
+    <div class="form-field" id="expiry-field-wrap">
+      <label class="form-label" data-i18n="expiry_label">Validade da primeira unidade</label>
+      <input class="vibe-date-input" type="date" id="f-expiry" style="width:100%"/>
+    </div>
+    <button class="btn-primary" onclick="addItem()" data-i18n="add_btn">Adicionar ao Kit</button>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="confirm-backdrop" id="confirm-backdrop">
+  <div class="confirm-sheet">
+    <div class="confirm-handle"></div>
+    <div class="confirm-icon" id="confirm-icon">🗑️</div>
+    <div class="confirm-title" id="confirm-title">Remover artigo?</div>
+    <div class="confirm-sub" id="confirm-sub">Esta acção não pode ser desfeita.</div>
+    <div class="confirm-actions">
+      <button class="btn-cancel" onclick="closeConfirm()" data-i18n="cancel">Cancelar</button>
+      <button class="btn-destructive" id="confirm-ok" data-i18n="remove">Remover</button>
+    </div>
+  </div>
+</div>
+
+<!-- INSTALL BANNER -->
+<div id="install-banner">
+  <span>📲</span>
+  <p>Instala o <strong>Kit 72h</strong> para acesso offline.</p>
+  <button class="btn-install" id="btn-install">Instalar</button>
+  <button class="btn-close-banner" onclick="document.getElementById('install-banner').classList.remove('show')">×</button>
+</div>
+
+<script>
+// ── I18N ─────────────────────────────────────────────────
+const LANGS = {
+  pt: {
+    flag:'🇵🇹', people:'Pessoas', hours:'Horas',
+    items:'Artigos', attention:'Atenção', preparation:'Preparação',
+    all:'Todos', alert:'Alerta',
+    cat_agua:'Água', cat_alimentacao:'Alimentos', cat_saude:'Saúde',
+    cat_energia:'Energia', cat_outros:'Outros',
+    add_item:'Adicionar artigo', name:'Nome', name_placeholder:'Ex: Água engarrafada',
+    category:'Categoria', unit:'Unidade', unit_placeholder:'Ex: litros, latas, unidades',
+    qty_label:'Qtd. por pessoa/dia (0 = fixo)',
+    expiry_label:'Validade da primeira unidade',
+    add_btn:'Adicionar ao Kit',
+    cancel:'Cancelar', remove:'Remover',
+    install_text:'Instala o <strong>Kit 72H</strong> para acesso offline.',
+    install_btn:'Instalar',
+    val_label:'Validade', add_expiry:'+ Validade',
+    no_expiry:'sem validade', fixed_qty:'fixo', needed:'necessário',
+    units_reg:'und. registadas',
+    defined:'(definido)', suggested:'(sugerido)', stored:'guardados em casa',
+    empty_alert_title:'Kit em dia!', empty_alert_sub:'Nenhum artigo em alerta — tudo OK.',
+    empty_title:'Sem artigos', empty_sub:'Toca no + para adicionar um artigo.',
+    tier_expired:'Expirado', tier_urgent:'URGENTE', tier_remaining:'restantes',
+    attention_needed:'Atenção requerida',
+    confirm_remove_item:'O artigo e todas as validades registadas serão eliminados.',
+    confirm_remove_expiry:'será removida do registo.',
+    confirm_remove_expiry_title:'Remover validade?',
+    confirm_remove_item_title:'Remover',
+    unit_label:'Unidade',
+    money_note:'BCE/DECO: 70–100 € por adulto · ~30 € por criança · Usar notas de 5, 10 e 20 €',
+    game_note:'França: manter crianças calmas sem ecrãs durante emergências.',
+    people_count: (n) => `${n} pessoa${n!==1?'s':''}`,
+  },
+  es: {
+    flag:'🇪🇸', people:'Personas', hours:'Horas',
+    items:'Artículos', attention:'Atención', preparation:'Preparación',
+    all:'Todos', alert:'Alerta',
+    cat_agua:'Agua', cat_alimentacao:'Alimentos', cat_saude:'Salud',
+    cat_energia:'Energía', cat_outros:'Otros',
+    add_item:'Añadir artículo', name:'Nombre', name_placeholder:'Ej: Agua embotellada',
+    category:'Categoría', unit:'Unidad', unit_placeholder:'Ej: litros, latas, unidades',
+    qty_label:'Cant. por persona/día (0 = fijo)',
+    expiry_label:'Caducidad de la primera unidad',
+    add_btn:'Añadir al Kit',
+    cancel:'Cancelar', remove:'Eliminar',
+    install_text:'Instala <strong>KIT 72H</strong> para acceso sin conexión.',
+    install_btn:'Instalar',
+    val_label:'Caducidad', add_expiry:'+ Caducidad',
+    no_expiry:'sin caducidad', fixed_qty:'fijo', needed:'necesario',
+    units_reg:'ud. registradas',
+    defined:'(definido)', suggested:'(sugerido)', stored:'guardados en casa',
+    empty_alert_title:'¡Kit al día!', empty_alert_sub:'Ningún artículo en alerta — todo OK.',
+    empty_title:'Sin artículos', empty_sub:'Pulsa + para añadir un artículo.',
+    tier_expired:'Caducado', tier_urgent:'URGENTE', tier_remaining:'restantes',
+    attention_needed:'Atención requerida',
+    confirm_remove_item:'El artículo y todas las fechas registradas serán eliminados.',
+    confirm_remove_expiry:'será eliminada del registro.',
+    confirm_remove_expiry_title:'¿Eliminar caducidad?',
+    confirm_remove_item_title:'Eliminar',
+    unit_label:'Unidad',
+    money_note:'BCE/DECO: 70–100 € por adulto · ~30 € por niño · Usar billetes de 5, 10 y 20 €',
+    game_note:'Francia: mantener a los niños tranquilos sin pantallas durante emergencias.',
+    people_count: (n) => `${n} persona${n!==1?'s':''}`,
+  },
+  it: {
+    flag:'🇮🇹', people:'Persone', hours:'Ore',
+    items:'Articoli', attention:'Attenzione', preparation:'Preparazione',
+    all:'Tutti', alert:'Allerta',
+    cat_agua:'Acqua', cat_alimentacao:'Alimenti', cat_saude:'Salute',
+    cat_energia:'Energia', cat_outros:'Altro',
+    add_item:'Aggiungi articolo', name:'Nome', name_placeholder:'Es: Acqua in bottiglia',
+    category:'Categoria', unit:'Unità', unit_placeholder:'Es: litri, lattine, pezzi',
+    qty_label:'Qtà per persona/giorno (0 = fisso)',
+    expiry_label:'Scadenza della prima unità',
+    add_btn:'Aggiungi al Kit',
+    cancel:'Annulla', remove:'Rimuovi',
+    install_text:'Installa <strong>KIT 72H</strong> per l\'accesso offline.',
+    install_btn:'Installa',
+    val_label:'Scadenza', add_expiry:'+ Scadenza',
+    no_expiry:'nessuna scadenza', fixed_qty:'fisso', needed:'necessario',
+    units_reg:'ud. registrate',
+    defined:'(definito)', suggested:'(suggerito)', stored:'conservati in casa',
+    empty_alert_title:'Kit aggiornato!', empty_alert_sub:'Nessun articolo in allerta — tutto OK.',
+    empty_title:'Nessun articolo', empty_sub:'Tocca + per aggiungere un articolo.',
+    tier_expired:'Scaduto', tier_urgent:'URGENTE', tier_remaining:'rimanenti',
+    attention_needed:'Attenzione richiesta',
+    confirm_remove_item:'L\'articolo e tutte le scadenze registrate verranno eliminati.',
+    confirm_remove_expiry:'sarà rimossa dal registro.',
+    confirm_remove_expiry_title:'Rimuovere scadenza?',
+    confirm_remove_item_title:'Rimuovi',
+    unit_label:'Unità',
+    money_note:'BCE/DECO: 70–100 € per adulto · ~30 € per bambino · Usare banconote da 5, 10 e 20 €',
+    game_note:'Francia: tenere i bambini calmi senza schermi durante le emergenze.',
+    people_count: (n) => `${n} persona${n!==1?'e':''}`,
+  },
+  fr: {
+    flag:'🇫🇷', people:'Personnes', hours:'Heures',
+    items:'Articles', attention:'Attention', preparation:'Préparation',
+    all:'Tous', alert:'Alerte',
+    cat_agua:'Eau', cat_alimentacao:'Aliments', cat_saude:'Santé',
+    cat_energia:'Énergie', cat_outros:'Autres',
+    add_item:'Ajouter un article', name:'Nom', name_placeholder:'Ex: Eau en bouteille',
+    category:'Catégorie', unit:'Unité', unit_placeholder:'Ex: litres, boîtes, unités',
+    qty_label:'Qté par personne/jour (0 = fixe)',
+    expiry_label:'Date d\'expiration de la première unité',
+    add_btn:'Ajouter au Kit',
+    cancel:'Annuler', remove:'Supprimer',
+    install_text:'Installez <strong>KIT 72H</strong> pour un accès hors ligne.',
+    install_btn:'Installer',
+    val_label:'Expiration', add_expiry:'+ Expiration',
+    no_expiry:'sans date', fixed_qty:'fixe', needed:'nécessaire',
+    units_reg:'ud. enregistrées',
+    defined:'(défini)', suggested:'(suggéré)', stored:'conservés à la maison',
+    empty_alert_title:'Kit à jour !', empty_alert_sub:'Aucun article en alerte — tout va bien.',
+    empty_title:'Aucun article', empty_sub:'Appuyez sur + pour ajouter un article.',
+    tier_expired:'Expiré', tier_urgent:'URGENT', tier_remaining:'restants',
+    attention_needed:'Attention requise',
+    confirm_remove_item:'L\'article et toutes les dates enregistrées seront supprimés.',
+    confirm_remove_expiry:'sera supprimée du registre.',
+    confirm_remove_expiry_title:'Supprimer la date ?',
+    confirm_remove_item_title:'Supprimer',
+    unit_label:'Unité',
+    money_note:'BCE/DECO: 70–100 € par adulte · ~30 € par enfant · Privilégier les billets de 5, 10 et 20 €',
+    game_note:'France: garder les enfants calmes sans écrans lors des urgences.',
+    people_count: (n) => `${n} personne${n!==1?'s':''}`,
+  },
+  de: {
+    flag:'🇩🇪', people:'Personen', hours:'Stunden',
+    items:'Artikel', attention:'Achtung', preparation:'Vorbereitung',
+    all:'Alle', alert:'Alarm',
+    cat_agua:'Wasser', cat_alimentacao:'Lebensmittel', cat_saude:'Gesundheit',
+    cat_energia:'Energie', cat_outros:'Sonstiges',
+    add_item:'Artikel hinzufügen', name:'Name', name_placeholder:'z.B. Mineralwasser',
+    category:'Kategorie', unit:'Einheit', unit_placeholder:'z.B. Liter, Dosen, Stück',
+    qty_label:'Menge pro Person/Tag (0 = fest)',
+    expiry_label:'Ablaufdatum der ersten Einheit',
+    add_btn:'Zum Kit hinzufügen',
+    cancel:'Abbrechen', remove:'Entfernen',
+    install_text:'Installiere <strong>KIT 72H</strong> für den Offline-Zugriff.',
+    install_btn:'Installieren',
+    val_label:'Ablaufdatum', add_expiry:'+ Ablaufdatum',
+    no_expiry:'kein Datum', fixed_qty:'fest', needed:'benötigt',
+    units_reg:'Einh. erfasst',
+    defined:'(festgelegt)', suggested:'(vorgeschlagen)', stored:'zu Hause aufbewahrt',
+    empty_alert_title:'Kit aktuell!', empty_alert_sub:'Kein Artikel im Alarm — alles OK.',
+    empty_title:'Keine Artikel', empty_sub:'Tippe auf +, um einen Artikel hinzuzufügen.',
+    tier_expired:'Abgelaufen', tier_urgent:'DRINGEND', tier_remaining:'verbleibend',
+    attention_needed:'Aufmerksamkeit erforderlich',
+    confirm_remove_item:'Der Artikel und alle erfassten Daten werden gelöscht.',
+    confirm_remove_expiry:'wird aus dem Register entfernt.',
+    confirm_remove_expiry_title:'Datum entfernen?',
+    confirm_remove_item_title:'Entfernen',
+    unit_label:'Einheit',
+    money_note:'EZB/DECO: 70–100 € pro Erwachsener · ~30 € pro Kind · Bevorzugt 5-, 10- und 20-€-Scheine',
+    game_note:'Frankreich: Kinder ohne Bildschirme bei Notfällen beschäftigen.',
+    people_count: (n) => `${n} Person${n!==1?'en':''}`,
+  },
+  en: {
+    flag:'🇬🇧', people:'People', hours:'Hours',
+    items:'Items', attention:'Attention', preparation:'Readiness',
+    all:'All', alert:'Alert',
+    cat_agua:'Water', cat_alimentacao:'Food', cat_saude:'Health',
+    cat_energia:'Energy', cat_outros:'Others',
+    add_item:'Add item', name:'Name', name_placeholder:'E.g. Bottled water',
+    category:'Category', unit:'Unit', unit_placeholder:'E.g. litres, cans, units',
+    qty_label:'Qty per person/day (0 = fixed)',
+    expiry_label:'Expiry date of first unit',
+    add_btn:'Add to Kit',
+    cancel:'Cancel', remove:'Remove',
+    install_text:'Install <strong>KIT 72H</strong> for offline access.',
+    install_btn:'Install',
+    val_label:'Expiry', add_expiry:'+ Expiry',
+    no_expiry:'no date', fixed_qty:'fixed', needed:'needed',
+    units_reg:'units logged',
+    defined:'(set)', suggested:'(suggested)', stored:'kept at home',
+    empty_alert_title:'Kit up to date!', empty_alert_sub:'No items in alert — all good.',
+    empty_title:'No items', empty_sub:'Tap + to add an item.',
+    tier_expired:'Expired', tier_urgent:'URGENT', tier_remaining:'remaining',
+    attention_needed:'Attention required',
+    confirm_remove_item:'The item and all logged expiry dates will be deleted.',
+    confirm_remove_expiry:'will be removed from the log.',
+    confirm_remove_expiry_title:'Remove expiry date?',
+    confirm_remove_item_title:'Remove',
+    unit_label:'Unit',
+    money_note:'ECB/DECO: 70–100 € per adult · ~30 € per child · Prefer 5, 10 and 20 € notes',
+    game_note:'France: keep children calm without screens during emergencies.',
+    people_count: (n) => `${n} person${n!==1?'s':''}`,
+  },
+};
+
+let currentLang = 'pt';
+
+function t(key){ return LANGS[currentLang][key] || LANGS['pt'][key] || key; }
+
+function applyLang(){
+  // update static [data-i18n] elements
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.getAttribute('data-i18n');
+    const txt=t(key);
+    if(key==='cat_agua')      el.textContent='💧 '+txt;
+    else if(key==='cat_alimentacao') el.textContent='🥫 '+txt;
+    else if(key==='cat_saude')       el.textContent='💊 '+txt;
+    else if(key==='cat_energia')     el.textContent='🔦 '+txt;
+    else if(key==='cat_outros')      el.textContent='📦 '+txt;
+    else if(key==='alert')           el.textContent='⚠️ '+txt;
+    else                             el.textContent=txt;
+  });
+  // placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+    el.placeholder=t(el.getAttribute('data-i18n-placeholder'));
+  });
+  // select options
+  ['agua','alimentacao','saude','energia','outros'].forEach(v=>{
+    const opt=document.querySelector(`#f-cat option[value="${v}"]`);
+    if(opt) opt.textContent = {
+      agua:'💧 ',alimentacao:'🥫 ',saude:'💊 ',energia:'🔦 ',outros:'📦 '
+    }[v] + t('cat_'+v);
+  });
+  // flag
+  document.getElementById('lang-flag').textContent=LANGS[currentLang].flag;
+  // mark active
+  document.querySelectorAll('.lang-menu button').forEach(btn=>{
+    btn.classList.toggle('active-lang', btn.getAttribute('onclick')===`setLang('${currentLang}')`);
+  });
+  // install banner text
+  const ip=document.querySelector('#install-banner p');
+  if(ip) ip.innerHTML=t('install_text');
+  const ib=document.getElementById('btn-install');
+  if(ib) ib.textContent=t('install_btn');
+}
+
+function setLang(lang){
+  currentLang=lang;
+  S.lang=lang;
+  save();
+  closeLangMenu();
+  applyLang();
+  render();
+}
+
+function toggleLangMenu(){
+  document.getElementById('lang-menu').classList.toggle('open');
+}
+function closeLangMenu(){
+  document.getElementById('lang-menu').classList.remove('open');
+}
+
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#lang-btn')&&!e.target.closest('#lang-menu')) closeLangMenu();
+});
+
+// ── STATE
+const S = { people:4, hours:72, filter:'todos', items:[], moneyVal:'', lang:'pt' };
+
+// ── THRESHOLDS  urgent≤7d  danger≤30d  warn≤90d  ok>90d
+function expStatus(ds) {
+  if (!ds) return null;
+  const now=new Date(); now.setHours(0,0,0,0);
+  const d=new Date(ds+'T00:00:00'); d.setHours(0,0,0,0);
+  const diff=Math.round((d-now)/86400000);
+  const rem=`${Math.abs(diff)}d ${t('tier_remaining')}`;
+  if (diff<0)   return {diff,tier:'expired',icon:'🚫',txt:t('tier_expired')};
+  if (diff<=7)  return {diff,tier:'urgent', icon:'🔴',txt:`${diff}d — ${t('tier_urgent')}`};
+  if (diff<=30) return {diff,tier:'danger', icon:'⚠️',txt:rem};
+  if (diff<=90) return {diff,tier:'warn',   icon:'🕐',txt:rem};
+  return             {diff,tier:'ok',     icon:'✅',txt:rem};
+}
+
+function earliest(units) {
+  const w=units.filter(u=>u.expiry);
+  if (!w.length) return null;
+  return w.reduce((a,b)=>new Date(a.expiry)<new Date(b.expiry)?a:b);
+}
+
+function worstStatus(units) {
+  const u=earliest(units); return u ? expStatus(u.expiry) : null;
+}
+
+// Categories that track expiry dates
+const HAS_EXPIRY = new Set(['agua','alimentacao','saude']);
+
+// ── DEFAULTS
+const DEFAULTS=[
+  {id:'d1', name:'Água potável',              emoji:'💧', cat:'agua',       unit:'litros',  qppd:1.5,  fixed:null,note:null},
+  {id:'d2', name:'Conservas (atum/sardinha)', emoji:'🐟', cat:'alimentacao',unit:'latas',   qppd:1,    fixed:null,note:null},
+  {id:'d3', name:'Feijão / grão em lata',    emoji:'🫘', cat:'alimentacao',unit:'latas',   qppd:0.5,  fixed:null,note:null},
+  {id:'d4', name:'Massa ou arroz',           emoji:'🍚', cat:'alimentacao',unit:'kg',      qppd:0.1,  fixed:null,note:null},
+  {id:'d5', name:'Bolachas / tostas',        emoji:'🍪', cat:'alimentacao',unit:'pacotes', qppd:0.3,  fixed:null,note:null},
+  {id:'d6', name:'Frutos secos / nozes',     emoji:'🥜', cat:'alimentacao',unit:'g',       qppd:40,   fixed:null,note:null},
+  {id:'d7', name:'Barras energéticas',       emoji:'🍫', cat:'alimentacao',unit:'unid.',   qppd:1.5,  fixed:null,note:null},
+  {id:'d8', name:'Chocolate',               emoji:'🍬', cat:'alimentacao',unit:'tabletes', qppd:0.15, fixed:null,note:null},
+  {id:'d9', name:'Leite UHT',               emoji:'🥛', cat:'alimentacao',unit:'litros',  qppd:0.3,  fixed:null,note:null},
+  {id:'d10',name:'Mel',                     emoji:'🍯', cat:'alimentacao',unit:'frascos', qppd:0.03, fixed:null,note:null},
+  {id:'d11',name:'Kit primeiros socorros',  emoji:'🩹', cat:'saude',      unit:'kit',     qppd:0,    fixed:1,   note:null},
+  {id:'d12',name:'Antialérgico + antidiarreico',emoji:'💊',cat:'saude',  unit:'cx',      qppd:0,    fixed:2,   note:null},
+  {id:'d13',name:'Carvão activado',         emoji:'⚫', cat:'saude',      unit:'cx',      qppd:0,    fixed:1,   note:null},
+  {id:'d14',name:'Medicação habitual (7d)', emoji:'🏥', cat:'saude',      unit:'set',     qppd:0,    fixed:1,   note:null},
+  {id:'d15',name:'Lanterna a pilhas',       emoji:'🔦', cat:'energia',    unit:'unid.',   qppd:0,    fixed:1,   note:null},
+  {id:'d16',name:'Pilhas AA/AAA extra',     emoji:'🔋', cat:'energia',    unit:'packs',   qppd:0,    fixed:2,   note:null},
+  {id:'d17',name:'Velas',                   emoji:'🕯️', cat:'energia',    unit:'pack',    qppd:0,    fixed:1,   note:null},
+  {id:'d18',name:'Fósforos / isqueiro',     emoji:'🔥', cat:'energia',    unit:'unid.',   qppd:0,    fixed:2,   note:null},
+  {id:'d19',name:'Rádio portátil a pilhas', emoji:'📻', cat:'energia',    unit:'unid.',   qppd:0,    fixed:1,   note:null},
+  {id:'d20',name:'Powerbank carregado',     emoji:'⚡', cat:'energia',    unit:'unid.',   qppd:0,    fixed:1,   note:null},
+  {
+    id:'d21',name:'Dinheiro em espécie',emoji:'💶',cat:'outros',unit:'€',qppd:0,fixed:1,
+    isMoney:true,
+    note:'BCE/DECO: 70–100 € por adulto · ~30 € por criança · Usar notas de 5, 10 e 20 €'
+  },
+  {id:'d22',name:'Cópias de documentos',   emoji:'📄', cat:'outros',     unit:'set',     qppd:0,    fixed:1,   note:null},
+  {id:'d23',name:'Cobertores extra',        emoji:'🛏️', cat:'outros',     unit:'unid.',   qppd:0,    fixed:1,   note:null},
+  {id:'d24',name:'Roupa quente sobresselente',emoji:'🧥',cat:'outros',   unit:'muda',    qppd:0,    fixed:1,   note:null},
+  {id:'d25',name:'Jogos / cartas',          emoji:'🎲', cat:'outros',     unit:'unid.',   qppd:0,    fixed:1,   note:'França: manter crianças calmas sem ecrãs durante emergências.'},
+].map(d=>({...d,checked:false,units:[]}));
+
+// ── PERSIST
+function load(){
+  try {
+    const sv=JSON.parse(localStorage.getItem('kit72_v4'));
+    if (sv){S.people=sv.people??4;S.hours=sv.hours??72;S.items=sv.items??[];S.moneyVal=sv.moneyVal??'';S.lang=sv.lang??'pt';}
+    else S.items=JSON.parse(JSON.stringify(DEFAULTS));
+  } catch {S.items=JSON.parse(JSON.stringify(DEFAULTS));}
+  currentLang=S.lang||'pt';
+}
+function save(){
+  localStorage.setItem('kit72_v4',JSON.stringify({people:S.people,hours:S.hours,items:S.items,moneyVal:S.moneyVal,lang:S.lang}));
+}
+
+// ── CALC
+function calcTarget(item){
+  if (item.isMoney) return null;
+  if (item.fixed) return item.fixed;
+  return Math.ceil(item.qppd*S.people*(S.hours/24)*10)/10;
+}
+
+// ── CATEGORY META
+const CATS=['agua','alimentacao','saude','energia','outros'];
+const CAT={
+  agua:{icon:'💧',label:'Água'},
+  alimentacao:{icon:'🥫',label:'Alimentação'},
+  saude:{icon:'💊',label:'Saúde'},
+  energia:{icon:'🔦',label:'Energia / Iluminação'},
+  outros:{icon:'📦',label:'Outros Essenciais'},
+};
+
+// ── RENDER
+function render(){
+  document.getElementById('val-people').textContent=S.people;
+  document.getElementById('val-hours').textContent=S.hours;
+
+  let items=S.items;
+  if (S.filter==='alerta'){
+    items=S.items.filter(i=>HAS_EXPIRY.has(i.cat)&&(()=>{const t=worstStatus(i.units);return t&&t.tier!=='ok';})());
+  } else if (S.filter!=='todos'){
+    items=S.items.filter(i=>i.cat===S.filter);
+  }
+
+  let html='';
+  if (!items.length){
+    const isAlert=S.filter==='alerta';
+    html=`<div class="empty-state">
+      <div class="empty-icon">${isAlert?'🟢':'📭'}</div>
+      <div class="empty-title">${isAlert?t('empty_alert_title'):t('empty_title')}</div>
+      <div class="empty-sub">${isAlert?t('empty_alert_sub'):t('empty_sub')}</div>
+    </div>`;
+  } else if (S.filter==='todos'){
+    const grouped={};
+    items.forEach(i=>{if(!grouped[i.cat])grouped[i.cat]=[];grouped[i.cat].push(i);});
+    CATS.forEach(cat=>{
+      if(!grouped[cat]?.length)return;
+      const m=CAT[cat];
+      html+=`<div class="cat-section">
+        <div class="cat-header">
+          <span class="cat-icon">${m.icon}</span>
+          <span class="cat-title">${t('cat_'+cat)}</span>
+          <span class="cat-count">${grouped[cat].length}</span>
+        </div>
+        ${grouped[cat].map(renderItem).join('')}
+      </div>`;
+    });
+  } else {
+    const m=CAT[S.filter]||{icon:'⚠️'};
+    html=`<div class="cat-section">
+      <div class="cat-header">
+        <span class="cat-icon">${m.icon}</span>
+        <span class="cat-title">${S.filter==='alerta'?t('attention_needed'):t('cat_'+S.filter)}</span>
+        <span class="cat-count">${items.length}</span>
+      </div>
+      ${items.map(renderItem).join('')}
+    </div>`;
+  }
+
+  document.getElementById('list-body').innerHTML=html;
+  renderStats();
+}
+
+function renderItem(item){
+  const hasExpiry = HAS_EXPIRY.has(item.cat);
+  const ws = hasExpiry ? worstStatus(item.units) : null;
+  const tier = ws ? ws.tier : '';
+  const target=calcTarget(item);
+
+  let targetTxt='';
+  if (item.isMoney){
+    const suggestedVal=Math.ceil(S.people*85);
+    const userVal=S.moneyVal?parseInt(S.moneyVal):null;
+    const displayVal=userVal||suggestedVal;
+    targetTxt=`≈ ${displayVal} € ${userVal?t('defined'):t('suggested')}`;
+  } else {
+    targetTxt=item.fixed?`${target} ${item.unit} (${t('fixed_qty')})`:`${t('needed')}: ${target} ${item.unit}`;
+  }
+
+  const moneyNote = t('money_note');
+  const gameNote  = t('game_note');
+
+  const moneyBlock=item.isMoney?`
+    <div class="item-note">${moneyNote}</div>
+    <div class="money-input-wrap">
+      <span class="money-currency">€</span>
+      <input
+        class="money-input"
+        type="number"
+        inputmode="numeric"
+        placeholder="${Math.ceil(S.people*85)}"
+        value="${S.moneyVal||''}"
+        onchange="setMoney(this.value)"
+        oninput="setMoney(this.value)"
+      />
+      <span class="money-suffix">${t('stored')}</span>
+    </div>`:
+    (item.note?`<div class="item-note">${item.id==='d25'?gameNote:item.note}</div>`:'');
+
+  const sortedUnits=[...item.units].sort((a,b)=>{
+    if(!a.expiry)return 1;if(!b.expiry)return -1;
+    return new Date(a.expiry)-new Date(b.expiry);
+  });
+
+  const unitRows=sortedUnits.map((u,i)=>{
+    const us=u.expiry?expStatus(u.expiry):null;
+    const dc=us?`dot-${us.tier}`:'dot-ok';
+    const locale={pt:'pt-PT',es:'es-ES',it:'it-IT',fr:'fr-FR',de:'de-DE',en:'en-GB'}[currentLang]||'pt-PT';
+    const dateStr=u.expiry
+      ?new Date(u.expiry+'T00:00:00').toLocaleDateString(locale,{day:'2-digit',month:'short',year:'numeric'})
+      :'—';
+    return `<div class="unit-row">
+      <div class="unit-dot ${dc}"></div>
+      <span class="unit-lbl">${t('unit_label')} ${i+1}</span>
+      <span class="unit-date">${dateStr}</span>
+      <span class="unit-rm" onclick="deleteUnit('${item.id}','${u.id}')">✕</span>
+    </div>`;
+  }).join('');
+
+  const badgeCls=ws?`badge-${ws.tier}`:'badge-none';
+  const badgeIcon=ws?ws.icon:'📅';
+  const badgeTxt=ws?ws.txt:t('no_expiry');
+
+  return `<div class="item-card status-${tier} ${item.checked?'is-checked':''}" id="card-${item.id}">
+    <div class="card-inner">
+      <div class="card-top">
+        <div class="vibe-checkbox ${item.checked?'checked':''}" onclick="toggleCheck('${item.id}')">
+          <svg viewBox="0 0 12 12" fill="none">
+            <path d="M2 6l3 3 5-5" stroke="#181b34" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="card-content">
+          <div class="item-name">${item.emoji?`<span class="item-emoji">${item.emoji}</span> `:''}${item.name}</div>
+          <div class="item-target">${targetTxt}</div>
+          ${moneyBlock}
+        </div>
+        <div class="card-actions">
+          <button class="icon-btn" onclick="deleteItem('${item.id}')" aria-label="Remover">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5zM11 2.5V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v.5H2.5a.5.5 0 0 0 0 1h.538l.853 8.527A2 2 0 0 0 5.885 14h4.23a2 2 0 0 0 1.994-1.973L12.962 3.5H13.5a.5.5 0 0 0 0-1H11zm-8.5 1h11l-.878 8.78A1 1 0 0 1 10.115 13H5.885a1 1 0 0 1-.997-.72L4.5 3.5z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- EXPIRY AREA — only for água, alimentos, saúde -->
+      ${hasExpiry ? `<div class="expiry-area">
+        <div class="expiry-header">
+          <span class="expiry-label">${t('val_label')}</span>
+          <span class="status-badge ${badgeCls}">${badgeIcon} ${badgeTxt}</span>
+        </div>
+        ${sortedUnits.length?`<div class="unit-list">${unitRows}</div>`:''}
+        <div class="add-unit-row">
+          <input type="date" class="vibe-date-input" id="date-${item.id}"/>
+          <button class="btn-ghost" onclick="addUnit('${item.id}')">${t('add_expiry')}</button>
+        </div>
+      </div>` : ''}
+    </div>
+  </div>`;
+}
+
+function renderStats(){
+  const total=S.items.length;
+  let nOk=0,nAlert=0;
+  S.items.forEach(i=>{
+    if(!HAS_EXPIRY.has(i.cat)){nOk++;return;} // no expiry = always ok
+    const t=worstStatus(i.units);
+    if(!t||t.tier==='ok')nOk++;else nAlert++;
+  });
+  const checked=S.items.filter(i=>i.checked).length;
+  const pct=total?Math.round((checked/total)*100):0;
+
+  document.getElementById('s-total').textContent=total;
+
+  const okEl=document.getElementById('s-ok');
+  okEl.textContent=nOk;
+  okEl.className='stat-number '+(nOk>0?'clr-ok':'');
+
+  const alEl=document.getElementById('s-alert');
+  alEl.textContent=nAlert;
+  alEl.className='stat-number '+(nAlert>0?(nAlert>3?'clr-danger':'clr-warn'):'');
+
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-bar').style.width=pct+'%';
+}
+
+// ── ACTIONS
+function toggleCheck(id){
+  const i=S.items.find(x=>x.id===id);
+  if(!i)return;
+  i.checked=!i.checked;
+  save();
+  // optimistic UI: toggle class directly then re-render
+  const card=document.getElementById('card-'+id);
+  const cb=card?.querySelector('.vibe-checkbox');
+  if(cb){
+    cb.classList.add('bounce');
+    cb.addEventListener('animationend',()=>cb.classList.remove('bounce'),{once:true});
+  }
+  render();
+}
+
+function animateStepper(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.classList.add('popping');
+  el.addEventListener('animationend',()=>el.classList.remove('popping'),{once:true});
+}
+
+function changePeople(d){S.people=Math.max(1,S.people+d);animateStepper('val-people');save();render();}
+function changeHours(d){S.hours=Math.max(24,S.hours+d);animateStepper('val-hours');save();render();}
+
+function setFilter(el,f){
+  S.filter=f;
+  document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function addUnit(itemId){
+  const item=S.items.find(x=>x.id===itemId);
+  const el=document.getElementById('date-'+itemId);
+  if(!item||!el||!el.value)return;
+  item.units.push({id:'u'+Date.now(),expiry:el.value});
+  el.value='';
+  save();render();
+}
+
+// ── CONFIRM DIALOG
+let _confirmCb=null;
+
+function showConfirm({icon,title,sub,cb}){
+  document.getElementById('confirm-icon').textContent=icon||'🗑️';
+  document.getElementById('confirm-title').textContent=title||'Remover?';
+  document.getElementById('confirm-sub').textContent=sub||'Esta acção não pode ser desfeita.';
+  document.getElementById('confirm-ok').onclick=()=>{closeConfirm();cb&&cb();};
+  document.getElementById('confirm-backdrop').classList.add('open');
+}
+
+function closeConfirm(){
+  document.getElementById('confirm-backdrop').classList.remove('open');
+  _confirmCb=null;
+}
+
+// close on backdrop click
+document.getElementById('confirm-backdrop').addEventListener('click',function(e){
+  if(e.target===this)closeConfirm();
+});
+
+function deleteUnit(itemId,unitId){
+  const item=S.items.find(x=>x.id===itemId);
+  if(!item)return;
+  const unit=item.units.find(u=>u.id===unitId);
+  const locale={pt:'pt-PT',es:'es-ES',it:'it-IT',fr:'fr-FR',de:'de-DE',en:'en-GB'}[currentLang]||'pt-PT';
+  const dateStr=unit?.expiry
+    ?new Date(unit.expiry+'T00:00:00').toLocaleDateString(locale,{day:'2-digit',month:'short',year:'numeric'})
+    :'—';
+  showConfirm({
+    icon:'📅',
+    title:t('confirm_remove_expiry_title'),
+    sub:`${t('unit_label')} ${dateStr} ${t('confirm_remove_expiry')}`,
+    cb:()=>{ item.units=item.units.filter(u=>u.id!==unitId); save();render(); }
+  });
+}
+
+function deleteItem(id){
+  const item=S.items.find(i=>i.id===id);
+  if(!item)return;
+  showConfirm({
+    icon:'🗑️',
+    title:`${t('confirm_remove_item_title')} "${item.name}"?`,
+    sub:t('confirm_remove_item'),
+    cb:()=>{ S.items=S.items.filter(i=>i.id!==id); save();render(); }
+  });
+}
+
+function setMoney(val){
+  S.moneyVal=val;save();
+  const moneyItem=S.items.find(i=>i.isMoney);
+  if(moneyItem){
+    const card=document.getElementById('card-'+moneyItem.id);
+    if(card){
+      const tgt=card.querySelector('.item-target');
+      const suggestedVal=Math.ceil(S.people*85);
+      const userVal=val?parseInt(val):null;
+      const displayVal=userVal||suggestedVal;
+      if(tgt)tgt.textContent=`≈ ${displayVal} € ${userVal?t('defined'):t('suggested')}`;
+    }
+  }
+}
+
+function toggleExpiryField(){
+  const cat=document.getElementById('f-cat').value;
+  const wrap=document.getElementById('expiry-field-wrap');
+  wrap.style.display=HAS_EXPIRY.has(cat)?'':'none';
+  if(!HAS_EXPIRY.has(cat)) document.getElementById('f-expiry').value='';
+}
+
+function openSheet(){
+  document.getElementById('sheet').classList.add('open');
+  const d=new Date();d.setFullYear(d.getFullYear()+1);
+  document.getElementById('f-expiry').value=d.toISOString().split('T')[0];
+  toggleExpiryField();
+  setTimeout(()=>document.getElementById('f-name').focus(),350);
+}
+
+function closeSheet(){document.getElementById('sheet').classList.remove('open');}
+
+function handleBackdropClick(e){
+  if(e.target===document.getElementById('sheet'))closeSheet();
+}
+
+function addItem(){
+  const name=document.getElementById('f-name').value.trim();
+  const cat=document.getElementById('f-cat').value;
+  const unit=document.getElementById('f-unit').value.trim()||'unid.';
+  const qty=parseFloat(document.getElementById('f-qty').value)||0;
+  const expiry=document.getElementById('f-expiry').value;
+  if(!name)return;
+  S.items.push({
+    id:'c'+Date.now(),name,cat,unit,
+    qppd:qty,fixed:qty===0?1:null,
+    checked:false,note:null,
+    units:expiry?[{id:'u'+Date.now(),expiry}]:[]
+  });
+  closeSheet();
+  ['f-name','f-unit','f-qty'].forEach(id=>document.getElementById(id).value='');
+  save();render();
+}
+
+// ── PWA INSTALL
+let dp;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();dp=e;
+  document.getElementById('install-banner').classList.add('show');
+});
+document.getElementById('btn-install').addEventListener('click',async()=>{
+  if(!dp)return;dp.prompt();await dp.userChoice;dp=null;
+  document.getElementById('install-banner').classList.remove('show');
+});
+
+if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
+
+// ── INIT
+load(); applyLang(); render();
+</script>
+</body>
+</html>
